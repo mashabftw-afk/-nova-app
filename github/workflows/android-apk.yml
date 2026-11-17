@@ -15,28 +15,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Download source
         uses: actions/checkout@v4
+
+      - name: Extract NOVA project
+        run: |
+          unzip -o NOVA_1_0_Android_Cloud_Build.zip -d .
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
-      - name: Create Android project
-        working-directory: client
+      - name: Create Android platform
+        working-directory: nova_work/client
         run: flutter create --platforms=android .
 
       - name: Install dependencies
-        working-directory: client
+        working-directory: nova_work/client
         run: flutter pub get
 
       - name: Build APK
-        working-directory: client
+        working-directory: nova_work/client
         run: flutter build apk --release
 
-      - name: Upload APK
+      - name: Save APK
         uses: actions/upload-artifact@v4
         with:
           name: NOVA-Android-APK
-          path: client/build/app/outputs/flutter-apk/app-release.apk
+          path: nova_work/client/build/app/outputs/flutter-apk/app-release.apk
